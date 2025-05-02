@@ -2,20 +2,20 @@
 package templates
 
 func TypeTemplate() []byte {
-	return []byte(`package types
+	return []byte(`package {{.Module}}
 
-type {{.Name}} struct { {{range .Fields}}
+type {{.Def.Name}} struct { {{range .Def.Fields}}
 	{{.ExportedName}} {{ if .Repeated}}[]{{end}}{{.Type.String}}{{end}}
 }
 `)
 }
 
 func EnumTemplate() []byte {
-	return []byte(`package types
+	return []byte(`package {{.Module}}
 
-type {{.Name}} int
+type {{.Def.Name}} int
 
-const ({{ $name := .Name }}{{range .Values}}
+const ({{ $name := .Def.Name }}{{range .Def.Values}}
 	{{$name}}{{.Value.ExportedName}} {{ $name }} = {{.Value.Value}}{{end}}
 )
 `)
@@ -42,22 +42,38 @@ import (
 `)
 }
 
+func HandlerTemplate() []byte {
+	return []byte(`package handlers
+	
+import (
+	"context"
+	"{{.Module}}"
+)
+type {{.Service.Name}} struct {
+}
+	
+func New{{.Service.Name}}() *{{.Service.Name}} {
+	return &{{.Service.Name}}{}
+}
+
+{{ $server := .Service.Name }}{{$module := .Module}}{{range .Service.Methods}}func (s *{{$server}}) {{.Name}}(ctx context.Context, req *{{$module}}.{{.Request.String}}, rsp *{{$module}}.{{.Response.String}}) error {
+
+	return nil
+}{{end}}
+	
+	`)
+}
 func ServiceTemplate() []byte {
 	return []byte(`package main
 
-import "go-micro.dev/v5"
-
-
-type {{.Def.Name}} struct {
-}
-
-func New{{.Def.Name}}() *{{.Def.Name}} {
-	return &{{.Def.Name}}{}
-}
+import (
+	"{{.Module}}/handlers"
+	"go-micro.dev/v5"
+)
 
 func main() {
 
-	handler := New{{.Def.Name}}()
+	handler := handlers.New{{.Def.Name}}()
 	// create service
 
 	service := micro.New("{{.ServiceName}}")
@@ -72,15 +88,15 @@ func main() {
 }
 
 func ServiceHandlerTemplate() []byte {
-	return []byte(`package main
+	return []byte(`package handlers
 
 import (
 	"context"
 
-	"{{.Module}}/types"
+	"{{.Module}}"
 )
 
-{{ $server := .Service.Name }}func (s *{{$server}}) {{.Def.Name}}(ctx context.Context, req *types.{{.Def.Request.String}}, rsp *types.{{.Def.Response.String}}) error {
+{{ $server := .Service.Name }}func (s *{{$server}}) {{.Def.Name}}(ctx context.Context, req *{{.Module}}.{{.Def.Request.String}}, rsp *{{.Module}}.{{.Def.Response.String}}) error {
 
 	return nil
 }
@@ -88,10 +104,11 @@ import (
 }
 
 func ServiceClientTemplate() []byte {
-	return []byte(`package types
+	return []byte(`package {{.Module}}
 import (
 	"context"
 	client "go-micro.dev/v5/client"
+
 )
 // Client API for {{.Def.Name}}
 

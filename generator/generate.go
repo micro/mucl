@@ -5,6 +5,7 @@ import (
 	"os"
 	"os/exec"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/micro/mu/generator/templates"
@@ -37,18 +38,24 @@ func (g *Generator) Generate() error {
 			return err
 		}
 	}
-	if !g.onlyTypes {
-		err := g.GenerateInfra()
-		if err != nil {
-			return err
-		}
-	}
+	// if !g.onlyTypes {
+	// 	err := g.GenerateInfra()
+	// 	if err != nil {
+	// 		return err
+	// 	}
+	// }
 	err := g.GenerateTypes()
 	if err != nil {
 		return err
 	}
 	if !g.onlyTypes {
 		err := g.GenerateServers()
+		if err != nil {
+			return err
+		}
+	}
+	if !g.onlyTypes {
+		err := g.GenerateHandlers()
 		if err != nil {
 			return err
 		}
@@ -129,7 +136,7 @@ func (g *Generator) Tidy() error {
 func (g *Generator) GenerateTypes() error {
 	tt := g.d.Messages()
 	for _, t := range tt {
-		typePath := filepath.Join(g.AbsolutePath, "types")
+		typePath := g.AbsolutePath
 		// Check if the directory exists, if not create it
 		if _, err := os.Stat(typePath); os.IsNotExist(err) {
 			err := os.MkdirAll(typePath, os.ModePerm)
@@ -144,14 +151,17 @@ func (g *Generator) GenerateTypes() error {
 		defer typeFile.Close()
 
 		typeTemplate := template.Must(template.New("type").Parse(string(templates.TypeTemplate())))
-		err = typeTemplate.Execute(typeFile, t)
+		err = typeTemplate.Execute(typeFile, map[string]interface{}{
+			"Module": g.d.Project(),
+			"Def":    t,
+		})
 		if err != nil {
 			return err
 		}
 	}
 	ee := g.d.Enums()
 	for _, e := range ee {
-		typePath := filepath.Join(g.AbsolutePath, "types")
+		typePath := g.AbsolutePath
 		// Check if the directory exists, if not create it
 		if _, err := os.Stat(typePath); os.IsNotExist(err) {
 			err := os.MkdirAll(typePath, os.ModePerm)
@@ -166,7 +176,11 @@ func (g *Generator) GenerateTypes() error {
 		defer typeFile.Close()
 
 		typeTemplate := template.Must(template.New("type").Parse(string(templates.EnumTemplate())))
-		err = typeTemplate.Execute(typeFile, e)
+		err = typeTemplate.Execute(typeFile,
+			map[string]interface{}{
+				"Module": g.d.Project(),
+				"Def":    e,
+			})
 		if err != nil {
 			return err
 		}
@@ -176,15 +190,16 @@ func (g *Generator) GenerateTypes() error {
 
 func (g *Generator) GenerateServers() error {
 	tt := g.d.Servers()
-	for _, t := range tt {
-		serverPath := filepath.Join(g.AbsolutePath, "cmd", t.DirectoryName())
-		// Check if the directory exists, if not create it
-		if _, err := os.Stat(serverPath); os.IsNotExist(err) {
-			err := os.MkdirAll(serverPath, os.ModePerm)
-			if err != nil {
-				return fmt.Errorf("failed to create directory: %v", err)
-			}
+	serverPath := filepath.Join(g.AbsolutePath, "cmd", g.d.Project())
+	// Check if the directory exists, if not create it
+	if _, err := os.Stat(serverPath); os.IsNotExist(err) {
+		err := os.MkdirAll(serverPath, os.ModePerm)
+		if err != nil {
+			return fmt.Errorf("failed to create directory: %v", err)
 		}
+	}
+	for _, t := range tt {
+
 		serverFile, err := os.Create(fmt.Sprintf("%s/%s", serverPath, t.FileName()))
 		if err != nil {
 			return err
@@ -194,30 +209,27 @@ func (g *Generator) GenerateServers() error {
 		serverTemplate := template.Must(template.New("type").Parse(string(templates.ServiceTemplate())))
 		err = serverTemplate.Execute(serverFile, map[string]interface{}{
 			"ServiceName": g.d.ServiceName(),
+			"Module":      g.d.Project(),
 			"Def":         t,
 		})
 		if err != nil {
 			return err
 		}
-		pluginsFile, err := os.Create(fmt.Sprintf("%s/%s", serverPath, "plugins.go"))
-		if err != nil {
-			return err
-		}
-		defer pluginsFile.Close()
-		pluginsTemplate := template.Must(template.New("type").Parse(string(templates.PluginsTemplate())))
-		err = pluginsTemplate.Execute(pluginsFile, map[string]interface{}{
-			"Module": g.d.Project(),
-		})
-		if err != nil {
-			return err
-		}
-		clientPath := filepath.Join(g.AbsolutePath, "types")
-		if _, err := os.Stat(clientPath); os.IsNotExist(err) {
-			err := os.MkdirAll(clientPath, os.ModePerm)
-			if err != nil {
-				return fmt.Errorf("failed to create directory: %v", err)
-			}
-		}
+		// pluginsFile, err := os.Create(fmt.Sprintf("%s/%s", serverPath, "plugins.go"))
+		// if err != nil {
+		// 	return err
+		// }
+		// defer pluginsFile.Close()
+		// pluginsTemplate := template.Must(template.New("type").Parse(string(templates.PluginsTemplate())))
+		// err = pluginsTemplate.Execute(pluginsFile, map[string]interface{}{
+		// 	"Module": g.d.Project(),
+		// })
+		// if err != nil {
+		// 	return err
+		// }
+
+		clientPath := g.AbsolutePath
+
 		clientFile, err := os.Create(fmt.Sprintf("%s/%s", clientPath, t.ClientFileName()))
 		if err != nil {
 			return err
@@ -227,29 +239,62 @@ func (g *Generator) GenerateServers() error {
 		clientTemplate := template.Must(template.New("client").Parse(string(templates.ServiceClientTemplate())))
 		err = clientTemplate.Execute(clientFile, map[string]interface{}{
 			"Service": t,
+			"Module":  g.d.Project(),
 			"Project": g.d.Project(),
 			"Def":     t,
 		})
 		if err != nil {
 			return err
 		}
-		for _, m := range t.Methods() {
-			methodFile, err := os.Create(fmt.Sprintf("%s/%s", serverPath, m.FileName()))
-			if err != nil {
-				return err
-			}
-			defer methodFile.Close()
 
-			methodTemplate := template.Must(template.New("type").Parse(string(templates.ServiceHandlerTemplate())))
-			err = methodTemplate.Execute(methodFile, map[string]interface{}{
-				"Service": t,
-				"Def":     m,
-				"Module":  g.d.Project(),
-			})
-			if err != nil {
-				return err
-			}
-		}
 	}
 	return nil
+}
+
+func (g *Generator) GenerateHandlers() error {
+	tt := g.d.Servers()
+	for _, t := range tt {
+		handlerPath := filepath.Join(g.AbsolutePath, "handlers")
+		// Check if the directory exists, if not create it
+		if _, err := os.Stat(handlerPath); os.IsNotExist(err) {
+			err := os.MkdirAll(handlerPath, os.ModePerm)
+			if err != nil {
+				return fmt.Errorf("failed to create directory: %v", err)
+			}
+		}
+		handlerFile, err := os.Create(fmt.Sprintf("%s/%s", handlerPath, strings.ToLower(t.Name)+".go"))
+		if err != nil {
+			return err
+		}
+		defer handlerFile.Close()
+
+		handlerTemplate := template.Must(template.New("type").Parse(string(templates.HandlerTemplate())))
+		err = handlerTemplate.Execute(handlerFile, map[string]interface{}{
+			"Service": t,
+			"Module":  g.d.Project(),
+		})
+		if err != nil {
+			return err
+		}
+
+		// for _, m := range t.Methods() {
+		// 	methodFile, err := os.Create(fmt.Sprintf("%s/%s", handlerPath, m.FileName()))
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// 	defer methodFile.Close()
+
+		// 	methodTemplate := template.Must(template.New("type").Parse(string(templates.ServiceHandlerTemplate())))
+		// 	err = methodTemplate.Execute(methodFile, map[string]interface{}{
+		// 		"Service": t,
+		// 		"Def":     m,
+		// 		"Module":  g.d.Project(),
+		// 	})
+		// 	if err != nil {
+		// 		return err
+		// 	}
+		// }
+	}
+	return nil
+
 }
