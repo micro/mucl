@@ -23,3 +23,21 @@ go.work.sum
 
 # env file
 .env
+
+# direnv
+.envrc
+
+# Goreleaser output directory
+/dist
+
+# locally built binary
+/mu
+
+# task file cache
+/.task
+
+# docs dependencies
+node_modules
+
+/docs/.vitepress/dist
+/docs/.vitepress/cache
