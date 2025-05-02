@@ -47,7 +47,7 @@ func (g *Generator) Generate() error {
 	if err != nil {
 		return err
 	}
-	if g.onlyTypes {
+	if !g.onlyTypes {
 		err := g.GenerateServers()
 		if err != nil {
 			return err

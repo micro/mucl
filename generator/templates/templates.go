@@ -125,3 +125,20 @@ func (c *{{$def.ClientStructName}}Client) {{.Name}}(ctx context.Context, in *{{.
 {{end}}
 `)
 }
+func ConfigTemplate() []byte {
+	return []byte(`project "{{.Module}}"
+service {{.Service}} {}
+
+type {{.Method}}Request {
+  input string
+}
+
+type {{.Method}}Response {
+  output string
+}
+
+server {{.Endpoint}} {
+  rpc {{.Method}}({{.Method}}Request) returns ({{.Method}}Response)
+}
+`)
+}
