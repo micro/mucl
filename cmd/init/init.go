@@ -91,8 +91,14 @@ func Run(c *cli.Context) error {
 	}
 
 	// Create the mu file
-	return generator.CreateConfig(serviceName, endpointName, rpcMethodName, goModuleName, c.String("definition"))
-
+	err = generator.CreateConfig(serviceName, endpointName, rpcMethodName, goModuleName, c.String("definition"))
+	if err != nil {
+		fmt.Println(err)
+		os.Exit(1)
+	}
+	fmt.Printf("Created %s\n", c.String("definition"))
+	fmt.Println("Edit the file and run `mu gen` to generate the code")
+	return nil
 }
 
 var (
