@@ -7,10 +7,7 @@ import (
 )
 
 func (m *Server) FileName() string {
-	if m == nil {
-		return ""
-	}
-	return strcase.ToSnake(m.Name) + "_server.go"
+	return "main.go"
 }
 
 func (m *Server) DirectoryName() string {
