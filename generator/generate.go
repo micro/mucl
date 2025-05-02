@@ -14,9 +14,10 @@ import (
 type Generator struct {
 	d            *mucl.Definition
 	AbsolutePath string
+	onlyTypes    bool
 }
 
-func NewGenerator(d *mucl.Definition) (*Generator, error) {
+func NewGenerator(d *mucl.Definition, onlyTypes bool) (*Generator, error) {
 	// Get the absolute path of the current directory
 	absPath, err := filepath.Abs(".")
 	if err != nil {
@@ -25,29 +26,38 @@ func NewGenerator(d *mucl.Definition) (*Generator, error) {
 	return &Generator{
 		d:            d,
 		AbsolutePath: absPath,
+		onlyTypes:    onlyTypes,
 	}, nil
 }
 
 func (g *Generator) Generate() error {
-	err := g.GenerateGoMod()
+	if !g.onlyTypes {
+		err := g.GenerateGoMod()
+		if err != nil {
+			return err
+		}
+	}
+	if !g.onlyTypes {
+		err := g.GenerateInfra()
+		if err != nil {
+			return err
+		}
+	}
+	err := g.GenerateTypes()
 	if err != nil {
 		return err
 	}
-	err = g.GenerateInfra()
-	if err != nil {
-		return err
+	if g.onlyTypes {
+		err := g.GenerateServers()
+		if err != nil {
+			return err
+		}
 	}
-	err = g.GenerateTypes()
-	if err != nil {
-		return err
-	}
-	err = g.GenerateServers()
-	if err != nil {
-		return err
-	}
-	err = g.Tidy()
-	if err != nil {
-		return err
+	if !g.onlyTypes {
+		err = g.Tidy()
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

@@ -1,7 +1,6 @@
 package gen
 
 import (
-	"errors"
 	"fmt"
 	"os"
 
@@ -23,12 +22,13 @@ func init() {
 }
 
 func Run(c *cli.Context) error {
-	f := c.Args().First()
+	f := c.String("definition")
 	if f == "" {
-		return errors.New("please provide an input file as the first argument")
+		return fmt.Errorf("definition file not provided")
 	}
-	// Read the file
-
+	if _, err := os.Stat(f); os.IsNotExist(err) {
+		return fmt.Errorf("definition file does not exist: %s", f)
+	}
 	bb, err := os.ReadFile(f)
 	if err != nil {
 		return fmt.Errorf("failed to read file: %v", err)
@@ -37,7 +37,10 @@ func Run(c *cli.Context) error {
 	if err != nil {
 		return fmt.Errorf("parsing failure: %v", err)
 	}
-	g, err := generator.NewGenerator(def)
+
+	onlyTypes := c.Bool("types")
+
+	g, err := generator.NewGenerator(def, onlyTypes)
 	if err != nil {
 		return fmt.Errorf("failed to create generator: %v", err)
 	}
@@ -48,5 +51,17 @@ func Run(c *cli.Context) error {
 }
 
 var (
-	Flags = []cli.Flag{}
+	Flags = []cli.Flag{
+		&cli.BoolFlag{
+			Name:    "types",
+			Usage:   "only generate types",
+			EnvVars: []string{"MU_GEN_TYPES"},
+		},
+		&cli.StringFlag{
+			Name:    "definition",
+			Usage:   "mu definition file",
+			EnvVars: []string{"MU_DEFINITION"},
+			Value:   "service.mu",
+		},
+	}
 )
