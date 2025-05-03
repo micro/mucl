@@ -44,7 +44,8 @@ import (
 }
 
 func HandlerTemplate() []byte {
-	return []byte(`package handlers
+	return []byte(`// Package handlers contains the implementation of the {{.Service.Name}} service
+package handlers
 	
 import (
 	"context"
@@ -75,6 +76,7 @@ func ServiceTemplate() []byte {
 
 import (
 	"{{.Module}}/handlers"
+
 	"go-micro.dev/v5"
 )
 
@@ -114,7 +116,8 @@ import (
 }
 
 func ServiceClientTemplate() []byte {
-	return []byte(`package {{.Module}}
+	return []byte(`// Package {{.Module}} defines the types and interfaces for the {{.Def.Name}} service
+package {{.Module}}
 
 import (
 	"context"
@@ -236,7 +239,7 @@ tasks:
   clean:
     desc: Clean the project	
     cmds:
-      - rm  ./{{.BINARY_NAME}}
+      - rm ./{{.BINARY_NAME}}
 
 `)
 }
