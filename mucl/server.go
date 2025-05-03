@@ -6,32 +6,32 @@ import (
 	"github.com/iancoleman/strcase"
 )
 
-func (m *Server) FileName() string {
+func (m *Endpoint) FileName() string {
 	return "main.go"
 }
 
-func (m *Server) DirectoryName() string {
+func (m *Endpoint) DirectoryName() string {
 	if m == nil {
 		return ""
 	}
 	return strings.ToLower(m.Name)
 }
 
-func (m *Server) ClientFileName() string {
+func (m *Endpoint) ClientFileName() string {
 	if m == nil {
 		return ""
 	}
 	return strcase.ToSnake(m.Name) + "_client" + ".go"
 }
 
-func (m *Server) ClientStructName() string {
+func (m *Endpoint) ClientStructName() string {
 	if m == nil {
 		return ""
 	}
 	return strcase.ToLowerCamel(m.Name)
 }
 
-func (m *Server) Methods() []*Method {
+func (m *Endpoint) Methods() []*Method {
 	if m == nil {
 		return nil
 	}

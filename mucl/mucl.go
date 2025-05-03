@@ -17,14 +17,14 @@ type Definition struct {
 type Entry struct {
 	Pos lexer.Position
 
-	Project string   `  "project" @String`
-	Import  string   `| "import" @String`
-	Service *Service `| @@`
-	Message *Message `| @@`
-	Server  *Server  `| @@`
-	Enum    *Enum    `| @@`
-	Option  *Option  `| "option" @@`
-	Extend  *Extend  `| @@`
+	Project string    `  "project" @String`
+	Import  string    `| "import" @String`
+	Service *Service  `| @@`
+	Message *Message  `| @@`
+	Server  *Endpoint `| @@`
+	Enum    *Enum     `| @@`
+	Option  *Option   `| "option" @@`
+	Extend  *Extend   `| @@`
 }
 
 type Option struct {
@@ -133,14 +133,14 @@ type Transport struct {
 	Name string `  "transport" @Ident`
 }
 
-type Server struct {
+type Endpoint struct {
 	Pos lexer.Position
 
-	Name  string         `"server" @Ident`
-	Entry []*ServerEntry `"{" ( @@ ";"? )* "}"`
+	Name  string           `"endpoint" @Ident`
+	Entry []*EndpointEntry `"{" ( @@ ";"? )* "}"`
 }
 
-type ServerEntry struct {
+type EndpointEntry struct {
 	Pos lexer.Position
 
 	Option *Option `  "option" @@`

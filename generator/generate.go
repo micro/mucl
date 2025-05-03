@@ -61,6 +61,12 @@ func (g *Generator) Generate() error {
 		}
 	}
 	if !g.onlyTypes {
+		err = g.GenerateTaskfile()
+		if err != nil {
+			return err
+		}
+	}
+	if !g.onlyTypes {
 		err = g.Tidy()
 		if err != nil {
 			return err
@@ -103,6 +109,27 @@ func (g *Generator) GenerateInfra() error {
 		map[string]interface{}{
 			"Plugins": GetPluginList(svc),
 			"Def":     g.d,
+		})
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+func (g *Generator) GenerateTaskfile() error {
+	taskfilePath := filepath.Join(g.AbsolutePath, "Taskfile.yml")
+
+	taskFile, err := os.Create(taskfilePath)
+	if err != nil {
+		return err
+	}
+	defer taskFile.Close()
+
+	infraTemplate := template.Must(template.New("type").Parse(string(templates.TaskfileTemplate())))
+	err = infraTemplate.Execute(taskFile,
+		map[string]interface{}{
+			"BINARY_NAME":  g.d.Project(),
+			"SERVICE_NAME": g.d.Project(),
 		})
 	if err != nil {
 		return err

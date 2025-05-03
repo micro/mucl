@@ -32,7 +32,7 @@ enum SearchType {
   DEEP = 1
 }
 
-server SearchService {
+endpoint SearchService {
   rpc Search(SearchRequest) returns (SearchResponse)
 }
 `)

@@ -8,7 +8,7 @@ func (d *Definition) Project() string {
 	}
 	for _, entry := range d.Entries {
 		if entry.Project != "" {
-			return strings.ReplaceAll(entry.Project, "\"", "")
+			return strings.ToLower(strings.ReplaceAll(entry.Project, "\"", ""))
 		}
 	}
 	return ""
@@ -63,11 +63,11 @@ func (d *Definition) Messages() []*Message {
 	return messages
 }
 
-func (d *Definition) Servers() []*Server {
+func (d *Definition) Servers() []*Endpoint {
 	if d == nil {
 		return nil
 	}
-	var servers []*Server
+	var servers []*Endpoint
 	for _, entry := range d.Entries {
 		if entry.Server != nil {
 			servers = append(servers, entry.Server)
