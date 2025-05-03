@@ -171,7 +171,7 @@ type {{.Method}}Response {
   output string
 }
 
-server {{.Endpoint}} {
+endpoint {{.Endpoint}} {
   rpc {{.Method}}({{.Method}}Request) returns ({{.Method}}Response)
 }
 `)
