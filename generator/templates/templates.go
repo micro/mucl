@@ -4,9 +4,10 @@ package templates
 func TypeTemplate() []byte {
 	return []byte(`package {{.Module}}
 
-type {{.Def.Name}} struct { {{range .Def.Fields}}
+{{range .Def}}type {{.Name}} struct { {{range .Fields}}
 	{{.ExportedName}} {{ if .Repeated}}[]{{end}}{{.Type.String}}{{end}}
 }
+{{end}}
 `)
 }
 

@@ -135,29 +135,27 @@ func (g *Generator) Tidy() error {
 
 func (g *Generator) GenerateTypes() error {
 	tt := g.d.Messages()
-	for _, t := range tt {
-		typePath := g.AbsolutePath
-		// Check if the directory exists, if not create it
-		if _, err := os.Stat(typePath); os.IsNotExist(err) {
-			err := os.MkdirAll(typePath, os.ModePerm)
-			if err != nil {
-				return fmt.Errorf("failed to create directory: %v", err)
-			}
-		}
-		typeFile, err := os.Create(fmt.Sprintf("%s/%s", typePath, t.FileName()))
+	typePath := g.AbsolutePath
+	// Check if the directory exists, if not create it
+	if _, err := os.Stat(typePath); os.IsNotExist(err) {
+		err := os.MkdirAll(typePath, os.ModePerm)
 		if err != nil {
-			return err
+			return fmt.Errorf("failed to create directory: %v", err)
 		}
-		defer typeFile.Close()
+	}
+	typeFile, err := os.Create(fmt.Sprintf("%s/%s", typePath, "types.go"))
+	if err != nil {
+		return err
+	}
+	defer typeFile.Close()
 
-		typeTemplate := template.Must(template.New("type").Parse(string(templates.TypeTemplate())))
-		err = typeTemplate.Execute(typeFile, map[string]interface{}{
-			"Module": g.d.Project(),
-			"Def":    t,
-		})
-		if err != nil {
-			return err
-		}
+	typeTemplate := template.Must(template.New("type").Parse(string(templates.TypeTemplate())))
+	err = typeTemplate.Execute(typeFile, map[string]interface{}{
+		"Module": g.d.Project(),
+		"Def":    tt,
+	})
+	if err != nil {
+		return err
 	}
 	ee := g.d.Enums()
 	for _, e := range ee {
