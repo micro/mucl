@@ -23,7 +23,6 @@ type Entry struct {
 	Endpoint *Endpoint `| @@`
 	Enum     *Enum     `| @@`
 	Option   *Option   `| "option" @@`
-	Extend   *Extend   `| @@`
 }
 
 type Option struct {
@@ -37,58 +36,10 @@ type Option struct {
 type Value struct {
 	Pos lexer.Position
 
-	String    *string  `  @String`
-	Number    *float64 `| @Float`
-	Int       *int64   `| @Int`
-	Bool      *bool    `| (@"true" | "false")`
-	Reference *string  `| @Ident @( "." Ident )*`
-	Map       *Map     `| @@`
-	Array     *Array   `| @@`
-}
-
-type Array struct {
-	Pos lexer.Position
-
-	Elements []*Value `"[" ( @@ ( ","? @@ )* )? "]"`
-}
-
-type Map struct {
-	Pos lexer.Position
-
-	Entries []*MapEntry `"{" ( @@ ( ( "," )? @@ )* )? "}"`
-}
-
-type MapEntry struct {
-	Pos lexer.Position
-
-	Key   *Value `@@`
-	Value *Value `":"? @@`
-}
-
-type Extensions struct {
-	Pos lexer.Position
-
-	Extensions []Range `"extensions" @@ ( "," @@ )*`
-}
-
-type Reserved struct {
-	Pos lexer.Position
-
-	Reserved []Range `"reserved" @@ ( "," @@ )*`
-}
-
-type Range struct {
-	Ident string `  @String`
-	Start int    `| ( @Int`
-	End   *int   `  ( "to" ( @Int`
-	Max   bool   `           | @"max" ) )? )`
-}
-
-type Extend struct {
-	Pos lexer.Position
-
-	Reference string   `"extend" @Ident ( "." @Ident )*`
-	Fields    []*Field `"{" ( @@ ";"? )* "}"`
+	String *string  `  @String`
+	Number *float64 `| @Float`
+	Int    *int64   `| @Int`
+	Bool   *bool    `| (@"true" | "false")`
 }
 
 type Service struct {
@@ -101,14 +52,11 @@ type Service struct {
 type ServiceEntry struct {
 	Pos lexer.Position
 
-	Broker     *Broker     `( @@`
-	Protocol   *Protocol   ` | @@`
-	Registry   *Registry   ` | @@`
-	Server     *MServer    ` | @@`
-	Extend     *Extend     ` | @@`
-	Reserved   *Reserved   ` | @@`
-	Extensions *Extensions ` | @@`
-	Transport  *Transport  ` | @@ ) ";"*`
+	Broker    *Broker    `( @@`
+	Protocol  *Protocol  ` | @@`
+	Registry  *Registry  ` | @@`
+	Server    *MServer   ` | @@`
+	Transport *Transport ` | @@ ) ";"*`
 }
 
 type Broker struct {
@@ -142,19 +90,19 @@ type Endpoint struct {
 type EndpointEntry struct {
 	Pos lexer.Position
 
-	Option *Option `  "option" @@`
-	Method *Method `| @@`
+	//	Option *Option `  "option" @@`
+	Method *Method ` @@`
 }
 
 type Method struct {
 	Pos lexer.Position
 
-	Name              string    `"rpc" @Ident`
-	StreamingRequest  bool      `"(" @"stream"?`
-	Request           *Type     `    @@ ")"`
-	StreamingResponse bool      `"returns" "(" @"stream"?`
-	Response          *Type     `              @@ ")"`
-	Options           []*Option `( "{" ( "option" @@ ";" )* "}" )?`
+	Name              string `"rpc" @Ident`
+	StreamingRequest  bool   `"(" @"stream"?`
+	Request           *Type  `    @@ ")"`
+	StreamingResponse bool   `"returns" "(" @"stream"?`
+	Response          *Type  `              @@ ")"`
+	// Options           []*Option `( "{" ( "option" @@ ";" )* "}" )?`
 }
 
 type Enum struct {
@@ -190,28 +138,10 @@ type Message struct {
 type MessageEntry struct {
 	Pos lexer.Position
 
-	Enum       *Enum       `( @@`
-	Option     *Option     ` | "option" @@`
-	Message    *Message    ` | @@`
-	Oneof      *Oneof      ` | @@`
-	Extend     *Extend     ` | @@`
-	Reserved   *Reserved   ` | @@`
-	Extensions *Extensions ` | @@`
-	Field      *Field      ` | @@ ) ";"*`
-}
-
-type Oneof struct {
-	Pos lexer.Position
-
-	Name    string        `"oneof" @Ident`
-	Entries []*OneofEntry `"{" ( @@ ";"* )* "}"`
-}
-
-type OneofEntry struct {
-	Pos lexer.Position
-
-	Field  *Field  `  @@`
-	Option *Option `| "option" @@`
+	Enum    *Enum    `( @@`
+	Option  *Option  ` | "option" @@`
+	Message *Message ` | @@`
+	Field   *Field   ` | @@ ) ";"*`
 }
 
 type Field struct {
