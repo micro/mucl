@@ -48,19 +48,6 @@ func (m *Message) Enums() []*Enum {
 	return enums
 }
 
-func (m *Message) Oneofs() []*Oneof {
-	if m == nil {
-		return nil
-	}
-	var oneofs []*Oneof
-	for _, entry := range m.Entries {
-		if entry.Oneof != nil {
-			oneofs = append(oneofs, entry.Oneof)
-		}
-	}
-	return oneofs
-}
-
 func (m *Message) Options() []*Option {
 	if m == nil {
 		return nil
@@ -72,43 +59,4 @@ func (m *Message) Options() []*Option {
 		}
 	}
 	return options
-}
-
-func (m *Message) Reserved() []*Reserved {
-	if m == nil {
-		return nil
-	}
-	var reserved []*Reserved
-	for _, entry := range m.Entries {
-		if entry.Reserved != nil {
-			reserved = append(reserved, entry.Reserved)
-		}
-	}
-	return reserved
-}
-
-func (m *Message) Extensions() []*Extensions {
-	if m == nil {
-		return nil
-	}
-	var extensions []*Extensions
-	for _, entry := range m.Entries {
-		if entry.Extensions != nil {
-			extensions = append(extensions, entry.Extensions)
-		}
-	}
-	return extensions
-}
-
-func (m *Message) Extend() []*Extend {
-	if m == nil {
-		return nil
-	}
-	var extends []*Extend
-	for _, entry := range m.Entries {
-		if entry.Extend != nil {
-			extends = append(extends, entry.Extend)
-		}
-	}
-	return extends
 }

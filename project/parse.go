@@ -37,9 +37,7 @@ func (s *Service) parseTypes(mucl *mucl.Definition) error {
 
 func (s *Service) parseMessage(m *mucl.Message) error {
 	// parse message
-	t := &Message{
-		Name: m.Name,
-	}
+	t := NewMessage(m.Name)
 	// parse embedded messages
 	for _, msg := range m.Messages() {
 		// parse message
@@ -74,6 +72,12 @@ func (s *Service) parseMessage(m *mucl.Message) error {
 		}
 		s.EnumMap[enum.Name] = e
 	}
+	// parse options
+	for _, option := range m.Options() {
+		o := NewOption(option.Name, option.Attr, option.Value)
+		t.Options[option.Name] = o
+	}
+
 	// add message to map
 	s.MessageMap[m.Name] = t
 	return nil

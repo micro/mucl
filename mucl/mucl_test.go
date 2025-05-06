@@ -50,6 +50,24 @@ func TestWithTwoServices(t *testing.T) {
 	_, err := Parser.ParseString("", twoServices)
 	require.Error(t, err)
 }
+func TestWithOptions(t *testing.T) {
+	tree, err := Parser.ParseString("", optionMucl)
+	require.NoError(t, err)
+	require.Equal(t, 4, len(tree.Entries))
+	require.Equal(t, "helloworld", tree.Service.Name)
+	require.Equal(t, "SearchRequest", tree.Entries[0].Message.Name)
+	require.Equal(t, "SearchResponse", tree.Entries[1].Message.Name)
+	require.Equal(t, "SearchType", tree.Entries[2].Enum.Name)
+	require.Equal(t, "SearchService", tree.Entries[3].Endpoint.Name)
+
+	// // check options
+	opts := tree.Entries[0].Message.Options()
+	require.Equal(t, 32, *opts[0].Value.Int)
+	opts2 := tree.Entries[1].Message.Options()
+	require.Equal(t, "micro", opts2[0].Name)
+	require.Equal(t, "tags", *opts2[0].Attr)
+
+}
 
 var goodMucl = `
 service helloworld {
@@ -163,6 +181,36 @@ type SearchRequest {
 
 type SearchResponse {
   results string
+}
+
+endpoint SearchService {
+  rpc Search(SearchRequest) returns (SearchResponse)
+}
+`
+var optionMucl = `
+service helloworld {
+  broker http
+  transport grpc
+  registry etcd
+  server mucp
+}
+
+type SearchRequest {
+  option struct_tags = 32;
+  query string
+  type SearchType
+  page_number int32
+  result_per_page int32
+}
+
+type SearchResponse {
+  option (micro).tags = "json";
+  results string
+}
+
+enum SearchType {
+  SHALLOW = 0
+  DEEP = 1
 }
 
 endpoint SearchService {

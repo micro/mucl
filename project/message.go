@@ -3,6 +3,15 @@ package project
 type Message struct {
 	Name     string
 	FieldMap map[string]*Field
+	Options  Options
+}
+
+func NewMessage(name string) *Message {
+	return &Message{
+		Name:     name,
+		FieldMap: make(map[string]*Field),
+		Options:  make(Options),
+	}
 }
 
 func (m *Message) GetField(name string) (*Field, bool) {
