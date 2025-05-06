@@ -9,7 +9,8 @@ import (
 )
 
 type Definition struct {
-	Pos lexer.Position
+	Pos     lexer.Position
+	Service *Service `@@`
 
 	Entries []*Entry `( @@ ";"* )*`
 }
@@ -17,14 +18,12 @@ type Definition struct {
 type Entry struct {
 	Pos lexer.Position
 
-	Project string    `  "project" @String`
-	Import  string    `| "import" @String`
-	Service *Service  `| @@`
-	Message *Message  `| @@`
-	Server  *Endpoint `| @@`
-	Enum    *Enum     `| @@`
-	Option  *Option   `| "option" @@`
-	Extend  *Extend   `| @@`
+	Import   string    ` "import" @String`
+	Message  *Message  `| @@`
+	Endpoint *Endpoint `| @@`
+	Enum     *Enum     `| @@`
+	Option   *Option   `| "option" @@`
+	Extend   *Extend   `| @@`
 }
 
 type Option struct {

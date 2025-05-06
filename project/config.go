@@ -1,18 +1,12 @@
-package generator
+package project
 
 import (
 	"os"
 	"text/template"
 
-	"github.com/micro/mu/generator/templates"
+	"github.com/micro/mu/project/templates"
 )
 
-/*
-var serviceName string
-var endpointName string
-var rpcMethodName string
-var goModuleName string
-*/
 func CreateConfig(service, endpoint, method, module, file string) error {
 	muFile, err := os.Create(file)
 	if err != nil {
@@ -27,7 +21,6 @@ func CreateConfig(service, endpoint, method, module, file string) error {
 		"Method":   method,
 		"Module":   module,
 	})
-
 	if err != nil {
 		return err
 	}
