@@ -22,6 +22,19 @@ func (m *Message) Fields() []*Field {
 	return fields
 }
 
+func (m *Message) Messages() []*Message {
+	if m == nil {
+		return nil
+	}
+	var msgs []*Message
+	for _, entry := range m.Entries {
+		if entry.Message != nil {
+			msgs = append(msgs, entry.Message)
+		}
+	}
+	return msgs
+}
+
 func (m *Message) Enums() []*Enum {
 	if m == nil {
 		return nil

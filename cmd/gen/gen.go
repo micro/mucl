@@ -1,12 +1,12 @@
+// Package gen provides the gen command for generating code from a mucl file
 package gen
 
 import (
+	"errors"
 	"fmt"
-	"os"
 
 	"github.com/micro/mu/cmd"
-	"github.com/micro/mu/generator"
-	"github.com/micro/mu/mucl"
+	"github.com/micro/mu/project"
 	"github.com/urfave/cli/v2"
 )
 
@@ -22,46 +22,48 @@ func init() {
 }
 
 func Run(c *cli.Context) error {
-	f := c.String("definition")
-	if f == "" {
-		return fmt.Errorf("definition file not provided")
+	file := c.String("definition")
+	if file == "" {
+		return errors.New("definition file is required")
 	}
-	if _, err := os.Stat(f); os.IsNotExist(err) {
-		return fmt.Errorf("definition file does not exist: %s", f)
-	}
-	bb, err := os.ReadFile(f)
-	if err != nil {
-		return fmt.Errorf("failed to read file: %v", err)
-	}
-	def, err := mucl.Parser.ParseBytes(f, bb)
-	if err != nil {
-		return fmt.Errorf("parsing failure: %v", err)
-	}
-
 	onlyTypes := c.Bool("types")
+	force := c.Bool("force")
 
-	g, err := generator.NewGenerator(def, onlyTypes)
+	p, err := project.NewProject(
+		project.WithMuclFile(file),
+		project.WithOutputDir("."),
+		project.WithOnlyTypes(onlyTypes),
+		project.WithForce(force),
+	)
 	if err != nil {
-		return fmt.Errorf("failed to create generator: %v", err)
+		return fmt.Errorf("failed to create project: %v", err)
 	}
-	if err := g.Generate(); err != nil {
-		return fmt.Errorf("failed to generate: %v", err)
+	if err := p.Init(); err != nil {
+		return fmt.Errorf("failed to initialize project: %v", err)
 	}
+	if err := p.Apply(); err != nil {
+		return fmt.Errorf("failed to generate code: %v", err)
+	}
+	fmt.Println("Code generation complete")
+
 	return nil
 }
 
-var (
-	Flags = []cli.Flag{
-		&cli.BoolFlag{
-			Name:    "types",
-			Usage:   "only generate types",
-			EnvVars: []string{"MU_GEN_TYPES"},
-		},
-		&cli.StringFlag{
-			Name:    "definition",
-			Usage:   "mu definition file",
-			EnvVars: []string{"MU_DEFINITION"},
-			Value:   "service.mu",
-		},
-	}
-)
+var Flags = []cli.Flag{
+	&cli.BoolFlag{
+		Name:    "types",
+		Usage:   "only generate types",
+		EnvVars: []string{"MU_GEN_TYPES"},
+	},
+	&cli.BoolFlag{
+		Name:    "force",
+		Usage:   "destructively overwrite existing files",
+		EnvVars: []string{"MU_GEN_FORCE"},
+	},
+	&cli.StringFlag{
+		Name:    "definition",
+		Usage:   "mu definition file",
+		EnvVars: []string{"MU_DEFINITION"},
+		Value:   "service.mu",
+	},
+}

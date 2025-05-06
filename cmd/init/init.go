@@ -1,14 +1,15 @@
-package gen
+// Package init provides the init command for creating a new service
+package init
 
 import (
+	"errors"
 	"fmt"
 	"os"
-
 	"strings"
 
 	"github.com/charmbracelet/huh"
 	"github.com/micro/mu/cmd"
-	"github.com/micro/mu/generator"
+	"github.com/micro/mu/project"
 	"github.com/urfave/cli/v2"
 )
 
@@ -27,7 +28,6 @@ func Run(c *cli.Context) error {
 	var serviceName string
 	var endpointName string
 	var rpcMethodName string
-	var goModuleName string
 	err := huh.NewForm(
 		huh.NewGroup(
 
@@ -36,10 +36,10 @@ func Run(c *cli.Context) error {
 				Value(&serviceName).
 				Validate(func(s string) error {
 					if s == "" {
-						return fmt.Errorf("service name cannot be empty")
+						return errors.New("service name cannot be empty")
 					}
 					if strings.Contains(s, " ") {
-						return fmt.Errorf("service name cannot contain spaces")
+						return errors.New("service name cannot contain spaces")
 					}
 					return nil
 				}),
@@ -48,10 +48,10 @@ func Run(c *cli.Context) error {
 				Value(&endpointName).
 				Validate(func(s string) error {
 					if s == "" {
-						return fmt.Errorf("endpoint name cannot be empty")
+						return errors.New("endpoint name cannot be empty")
 					}
 					if strings.Contains(s, " ") {
-						return fmt.Errorf("endpoint name cannot contain spaces")
+						return errors.New("endpoint name cannot contain spaces")
 					}
 					return nil
 				}),
@@ -60,22 +60,10 @@ func Run(c *cli.Context) error {
 				Value(&rpcMethodName).
 				Validate(func(s string) error {
 					if s == "" {
-						return fmt.Errorf("method name cannot be empty")
+						return errors.New("method name cannot be empty")
 					}
 					if strings.Contains(s, " ") {
-						return fmt.Errorf("method name cannot contain spaces")
-					}
-					return nil
-				}),
-			huh.NewInput().Title("Go Module name").
-				Placeholder("Name of the first method. e.g. userservice or github.com/myorg/userservice").
-				Value(&goModuleName).
-				Validate(func(s string) error {
-					if s == "" {
-						return fmt.Errorf("module name cannot be empty")
-					}
-					if strings.Contains(s, " ") {
-						return fmt.Errorf("module name cannot contain spaces")
+						return errors.New("method name cannot contain spaces")
 					}
 					return nil
 				}),
@@ -90,8 +78,29 @@ func Run(c *cli.Context) error {
 		os.Exit(1)
 	}
 
+	// check to see if the current directory is empty
+	// if not, warn the user
+	files, err := os.ReadDir(".")
+	if err != nil {
+		return err
+	}
+	if len(files) > 0 {
+		fmt.Println("Current directory is not empty")
+		fmt.Println("Creating a new directory: ", serviceName)
+		err = os.Mkdir(serviceName, 0o755)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+		err = os.Chdir(serviceName)
+		if err != nil {
+			fmt.Println(err)
+			os.Exit(1)
+		}
+	}
+
 	// Create the mu file
-	err = generator.CreateConfig(serviceName, endpointName, rpcMethodName, goModuleName, c.String("definition"))
+	err = project.CreateConfig(serviceName, endpointName, rpcMethodName, serviceName, c.String("definition"))
 	if err != nil {
 		fmt.Println(err)
 		os.Exit(1)
@@ -101,14 +110,11 @@ func Run(c *cli.Context) error {
 	return nil
 }
 
-var (
-	Flags = []cli.Flag{
-
-		&cli.StringFlag{
-			Name:    "definition",
-			Usage:   "mu definition file",
-			EnvVars: []string{"MU_DEFINITION"},
-			Value:   "service.mu",
-		},
-	}
-)
+var Flags = []cli.Flag{
+	&cli.StringFlag{
+		Name:    "definition",
+		Usage:   "mu definition file",
+		EnvVars: []string{"MU_DEFINITION"},
+		Value:   "service.mu",
+	},
+}

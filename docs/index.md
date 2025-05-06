@@ -11,6 +11,9 @@ hero:
       text: Installation
       link: /guide/installation
     - theme: alt
+      text: go-micro Ecosystem
+      link: /guide/ecosystem
+    - theme: alt
       text: Get Started
       link: /guide/getting-started
 

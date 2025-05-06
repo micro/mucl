@@ -1,3 +1,4 @@
+// Package cmd provides the command line interface for mu
 package cmd
 
 import (
@@ -17,10 +18,6 @@ type Cmd interface {
 
 type command struct {
 	app *cli.App
-
-	// before is a function which should
-	// be called in Before if not nil
-	before cli.ActionFunc
 }
 
 var (
@@ -38,7 +35,6 @@ var (
 func action(c *cli.Context) error {
 	if c.Args().Len() == 0 {
 		return MissingCommand(c)
-
 	}
 
 	// srv == nil
@@ -46,7 +42,6 @@ func action(c *cli.Context) error {
 }
 
 func New() *command {
-
 	cmd := new(command)
 	cmd.app = cli.NewApp()
 	cmd.app.Name = name

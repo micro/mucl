@@ -1,41 +1,15 @@
 package mucl
 
-import "strings"
-
-func (d *Definition) Project() string {
-	if d == nil {
-		return ""
-	}
-	for _, entry := range d.Entries {
-		if entry.Project != "" {
-			return strings.ToLower(strings.ReplaceAll(entry.Project, "\"", ""))
-		}
-	}
-	return ""
-}
-
 func (d *Definition) ServiceName() string {
-	if d == nil {
-		return ""
-	}
-	for _, entry := range d.Entries {
-		if entry.Service != nil {
-			return strings.ReplaceAll(entry.Service.Name, "\"", "")
-		}
-	}
+	// if d == nil {
+	// 	return ""
+	// }
+	// for _, entry := range d.Entries {
+	// 	if entry.Service != nil {
+	// 		return strings.ReplaceAll(entry.Service.Name, "\"", "")
+	// 	}
+	// }
 	return ""
-}
-
-func (d *Definition) Service() *Service {
-	if d == nil {
-		return nil
-	}
-	for _, entry := range d.Entries {
-		if entry.Service != nil {
-			return entry.Service
-		}
-	}
-	return nil
 }
 
 func (d *Definition) Import() string {
@@ -69,8 +43,8 @@ func (d *Definition) Servers() []*Endpoint {
 	}
 	var servers []*Endpoint
 	for _, entry := range d.Entries {
-		if entry.Server != nil {
-			servers = append(servers, entry.Server)
+		if entry.Endpoint != nil {
+			servers = append(servers, entry.Endpoint)
 		}
 	}
 	return servers
