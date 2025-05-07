@@ -1,6 +1,6 @@
-# mu
-Mu is a cli tool for the development of go-micro services
+# Mu
 
+Mu is a code generation tool for the development of go-micro services
 
 ## Documentation
 
