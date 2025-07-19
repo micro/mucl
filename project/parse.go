@@ -1,6 +1,6 @@
 package project
 
-import "github.com/micro/mu/mucl"
+import "github.com/micro/mucl/def"
 
 func fromMuCL(mucl *mucl.Definition) (*Service, error) {
 	serviceName := mucl.Service.Name

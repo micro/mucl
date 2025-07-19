@@ -8,7 +8,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/micro/mu/project/templates"
+	"github.com/micro/mucl/project/templates"
 )
 
 func (p *Project) GenerateGoMod() error {

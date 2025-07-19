@@ -1,4 +1,4 @@
-module github.com/micro/mu
+module github.com/micro/mucl
 
 go 1.24.2
 

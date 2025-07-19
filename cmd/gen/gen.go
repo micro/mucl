@@ -5,8 +5,8 @@ import (
 	"errors"
 	"fmt"
 
-	"github.com/micro/mu/cmd"
-	"github.com/micro/mu/project"
+	"github.com/micro/mucl/cmd"
+	"github.com/micro/mucl/project"
 	"github.com/urfave/cli/v2"
 )
 

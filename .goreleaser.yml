@@ -2,7 +2,7 @@
 # vim: set ts=2 sw=2 tw=0 fo=cnqoj
 
 version: 2
-project_name: mu 
+project_name: mucl
 before:
   hooks:
     # You may remove this if you don't use go modules.
@@ -19,12 +19,12 @@ builds:
     goarch:
       - amd64
       - arm64
-    binary: mu
-    id: mu
+    binary: mucl
+    id: mucl
     # Default: '-s -w -X main.version={{.Version}} -X main.commit={{.Commit}} -X main.date={{.Date}} -X main.builtBy=goreleaser'.
     # Templates: allowed.
     ldflags:
-      - -s -w -X github.com/micro/mu/cmd.version={{.Version}} -X github.com/micro/mu/cmd.commit={{.Commit}} -X github.com/micro/mu/cmd.date={{ .CommitDate }} -X github.com/micro/mu/cmd.builtBy=goreleaser
+      - -s -w -X github.com/micro/mucl/cmd.version={{.Version}} -X github.com/micro/mucl/cmd.commit={{.Commit}} -X github.com/micro/mucl/cmd.date={{ .CommitDate }} -X github.com/micro/mucl/cmd.builtBy=goreleaser
 archives:
   - formats: [ 'tar.gz' ]
     # this name template makes the OS and Arch compatible with the results of `uname`.
@@ -82,6 +82,5 @@ release:
   footer: >-
 
     ---
-    Mu documentation - https://micro.github.io/mu
-    GoMicro - https://micro.mu
+    Mu documentation - https://micro.github.io/mucl
 

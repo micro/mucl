@@ -1,6 +1,6 @@
 package project
 
-import "github.com/micro/mu/mucl"
+import "github.com/micro/mucl/def"
 
 // Options is a map of option names to their values.
 type Options map[string]*Option

@@ -3,7 +3,7 @@ package project
 import (
 	"fmt"
 
-	"github.com/micro/mu/mucl"
+	"github.com/micro/mucl/def"
 )
 
 // PluginMap is a map of plugin names to their respective plugin import options

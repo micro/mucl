@@ -1,12 +1,12 @@
 package main
 
 import (
-	"github.com/micro/mu/cmd"
+	"github.com/micro/mucl/cmd"
 
 	// load packages so they can register commands
-	_ "github.com/micro/mu/cmd/ebnf"
-	_ "github.com/micro/mu/cmd/gen"
-	_ "github.com/micro/mu/cmd/init"
+	_ "github.com/micro/mucl/cmd/ebnf"
+	_ "github.com/micro/mucl/cmd/gen"
+	_ "github.com/micro/mucl/cmd/init"
 )
 
 func main() {

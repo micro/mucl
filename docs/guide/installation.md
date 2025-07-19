@@ -6,13 +6,13 @@ Choose your adventure below.
 
 ## Direct Download
 
-You can download the binary from the [mu releases page](https://github.com/micro/mu/releases) on GitHub and add to your `$PATH`.
+You can download the binary from the [mu releases page](https://github.com/micro/mucl/releases) on GitHub and add to your `$PATH`.
 
 The mu_VERSION_checksums.txt file contains the SHA-256 checksum for each file.
 
 ## Installer Script
 
-We also have an [install script](https://github.com/micro/mu/blob/main/docs/public/install.sh) which is very useful in scenarios like CI.
+We also have an [install script](https://github.com/micro/mucl/blob/main/docs/public/install.sh) which is very useful in scenarios like CI.
 
 By default, it installs on the `./bin` directory relative to the working directory:
 
@@ -28,7 +28,7 @@ sh -c "$(curl --location https://micro.github.io/mu/install.sh)" -- -d -b ~/.loc
 
 !> On macOS and Windows, ~/.local/bin and ~/bin are not added to $PATH by default.
 
-By default, it installs the latest version available. You can also specify a tag ([available in releases](https://github.com/micro/mu/releases)) to install a specific version:
+By default, it installs the latest version available. You can also specify a tag ([available in releases](https://github.com/micro/mucl/releases)) to install a specific version:
 
 ```bash
 sh -c "$(curl --location https://micro.github.io/mu/install.sh)" -- -d v0.1.0

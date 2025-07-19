@@ -1,4 +1,4 @@
-# Mu
+# MuCL
 
 Mu is a code generation tool for the development of go-micro services
 

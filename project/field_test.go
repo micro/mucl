@@ -5,7 +5,7 @@ import (
 	"testing"
 
 	require "github.com/alecthomas/assert/v2"
-	"github.com/micro/mu/mucl"
+	"github.com/micro/mucl/def"
 )
 
 func TestFields(t *testing.T) {

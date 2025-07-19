@@ -7,7 +7,7 @@ import (
 	"path/filepath"
 	"strings"
 
-	"github.com/micro/mu/mucl"
+	"github.com/micro/mucl/def"
 )
 
 // Project represents a project with a mucl

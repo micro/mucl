@@ -46,7 +46,7 @@ export default defineAdditionalConfig({
     },
 
     editLink: {
-      pattern: 'https://github.com/micro/mu/edit/main/docs/:path',
+      pattern: 'https://github.com/micro/mucl/edit/main/docs/:path',
       text: 'Edit this page on GitHub'
     },
 
@@ -74,7 +74,7 @@ function nav(): DefaultTheme.NavItem[] {
       items: [
         {
           text: 'Contributing',
-          link: 'https://github.com/micro/mu/blob/main/CONTRIBUTING.md'
+          link: 'https://github.com/micro/mucl/blob/main/CONTRIBUTING.md'
         }
       ]
     }

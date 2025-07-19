@@ -4,7 +4,7 @@ import (
 	"os"
 	"text/template"
 
-	"github.com/micro/mu/project/templates"
+	"github.com/micro/mucl/project/templates"
 )
 
 func CreateConfig(service, endpoint, method, module, file string) error {

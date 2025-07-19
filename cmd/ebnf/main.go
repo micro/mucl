@@ -4,8 +4,8 @@ package gen
 import (
 	"fmt"
 
-	"github.com/micro/mu/cmd"
-	"github.com/micro/mu/mucl"
+	"github.com/micro/mucl/cmd"
+	"github.com/micro/mucl/def"
 	"github.com/urfave/cli/v2"
 )
 
