@@ -6,7 +6,7 @@ set -e
 usage() {
   this=$1
   cat <<EOF
-$this: download binaries for mu
+$this: download binaries for mucl
 
 Usage: $this [-b] bindir [-d] [tag]
   -b sets bindir or installation directory, Defaults to ./bin
@@ -62,23 +62,23 @@ execute() {
 }
 get_binaries() {
   case "$PLATFORM" in
-  darwin/amd64) BINARIES="mu" ;;
-  darwin/arm64) BINARIES="mu" ;;
-  darwin/armv5) BINARIES="mu" ;;
-  darwin/armv6) BINARIES="mu" ;;
-  darwin/armv7) BINARIES="mu" ;;
-  linux/386) BINARIES="mu" ;;
-  linux/amd64) BINARIES="mu" ;;
-  linux/arm64) BINARIES="mu" ;;
-  linux/armv5) BINARIES="mu" ;;
-  linux/armv6) BINARIES="mu" ;;
-  linux/armv7) BINARIES="mu" ;;
-  windows/386) BINARIES="mu" ;;
-  windows/amd64) BINARIES="mu" ;;
-  windows/arm64) BINARIES="mu" ;;
-  windows/armv5) BINARIES="mu" ;;
-  windows/armv6) BINARIES="mu" ;;
-  windows/armv7) BINARIES="mu" ;;
+  darwin/amd64) BINARIES="mucl" ;;
+  darwin/arm64) BINARIES="mucl" ;;
+  darwin/armv5) BINARIES="mucl" ;;
+  darwin/armv6) BINARIES="mucl" ;;
+  darwin/armv7) BINARIES="mucl" ;;
+  linux/386) BINARIES="mucl" ;;
+  linux/amd64) BINARIES="mucl" ;;
+  linux/arm64) BINARIES="mucl" ;;
+  linux/armv5) BINARIES="mucl" ;;
+  linux/armv6) BINARIES="mucl" ;;
+  linux/armv7) BINARIES="mucl" ;;
+  windows/386) BINARIES="mucl" ;;
+  windows/amd64) BINARIES="mucl" ;;
+  windows/arm64) BINARIES="mucl" ;;
+  windows/armv5) BINARIES="mucl" ;;
+  windows/armv6) BINARIES="mucl" ;;
+  windows/armv7) BINARIES="mucl" ;;
   *)
     log_crit "platform $PLATFORM is not supported.  Make sure this script is up-to-date and file request at https://github.com/${PREFIX}/issues/new"
     exit 1
@@ -371,10 +371,10 @@ End of functions from https://github.com/client9/shlib
 ------------------------------------------------------------------------
 EOF
 
-PROJECT_NAME="mu"
+PROJECT_NAME="mucl"
 OWNER="micro"
-REPO="mu"
-BINARY=mu
+REPO="mucl"
+BINARY=mucl
 FORMAT=tar.gz
 OS=$(uname_os)
 ARCH=$(uname_arch)
@@ -407,7 +407,7 @@ log_info "found version: ${VERSION} for ${TAG}/${OS}/${ARCH}"
 NAME=${BINARY}_${OS}_${ARCH}
 TARBALL=${NAME}.${FORMAT}
 TARBALL_URL=${GITHUB_DOWNLOAD}/${TAG}/${TARBALL}
-CHECKSUM=mu_${VERSION}_checksums.txt
+CHECKSUM=mucl_${VERSION}_checksums.txt
 CHECKSUM_URL=${GITHUB_DOWNLOAD}/${TAG}/${CHECKSUM}
 
 execute

@@ -3,8 +3,8 @@
 layout: home
 
 hero:
-  name: "mu"
-  text: "Developer tools for go-micro"
+  name: "mucl"
+  text: "Service configuration language"
   tagline: Take control of your microservice development
   actions:
     - theme: brand

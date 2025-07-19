@@ -4,5 +4,5 @@ The [`go-micro`](https://github.com/micro/go-micro) project is XXXXX for develop
 
 In addition to `go-micro` there are two other components:
 
-- `mu` - for the development workflow
+- `mucl` - service definition language
 - `micro` - for production and operational needs
