@@ -3,7 +3,7 @@ import { defineAdditionalConfig, type DefaultTheme } from 'vitepress'
 
 // // https://vitepress.dev/reference/site-config
 // export default defineConfig({
-//   title: "mu",
+//   title: "mucl",
 //   description: "Developer tools for go-micro",
 //   themeConfig: {
 //     // https://vitepress.dev/reference/default-theme-config
@@ -23,7 +23,7 @@ import { defineAdditionalConfig, type DefaultTheme } from 'vitepress'
 //     ],
 
 //     socialLinks: [
-//       { icon: 'github', link: 'https://github.com/micro/mu' }
+//       { icon: 'github', link: 'https://github.com/micro/mucl' }
 //     ]
 //   }
 // })
@@ -32,9 +32,9 @@ import { defineAdditionalConfig, type DefaultTheme } from 'vitepress'
 
 export default defineAdditionalConfig({
   description: 'Developer tools for go-micro',
-  title: 'mu',
+  title: 'mucl',
   cleanUrls: true,
-  base: '/mu/',
+  base: '/mucl/',
 
 
   themeConfig: {
@@ -51,7 +51,7 @@ export default defineAdditionalConfig({
     },
 
     footer: {
-      message: 'mu is part of go-micro.',
+      message: 'mucl is part of go-micro.',
       copyright: 'Copyright © 2015-present Asim Aslam'
     }
   }
@@ -61,7 +61,7 @@ function nav(): DefaultTheme.NavItem[] {
   return [
     {
       text: 'Guide',
-      link: '/guide/what-is-mu',
+      link: '/guide/what-is-mucl',
       activeMatch: '/guide/'
     },
     {
@@ -70,7 +70,7 @@ function nav(): DefaultTheme.NavItem[] {
       activeMatch: '/reference/'
     },
     {
-      text: "mu",
+      text: "mucl",
       items: [
         {
           text: 'Contributing',
@@ -87,8 +87,8 @@ function sidebarGuide(): DefaultTheme.SidebarItem[] {
       text: 'Introduction',
       collapsed: false,
       items: [
-        { text: 'What is mu?', link: 'what-is-mu' },
-        { text: 'Install mu', link: 'installation' },
+        { text: 'What is mucl?', link: 'what-is-mucl' },
+        { text: 'Install mucl', link: 'installation' },
         { text: 'Getting Started', link: 'getting-started' }
       ]
     },
